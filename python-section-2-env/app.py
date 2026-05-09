@@ -75,3 +75,29 @@ def get_item(item_id):
         return items[item_id]
     except KeyError:
         return abort(404, message="Item not found")
+
+@app.delete("/item/<string:item_id>")
+def delete_item(item_id):
+    try:
+        del items[item_id]
+        return {"message": "Item deleted"}
+    except KeyError:
+        return abort(404, message="Item not found")
+@app.put("/item/<string:item_id>")
+def update_item(item_id):
+    item_data = request.get_json()
+    if "price" in item_data and item_data["price"] <= 0:
+        return abort(400, message="Price must be positive")
+    try:
+        item = items[item_id]
+        item.update(item_data)
+        return item
+    except KeyError:
+        return abort(404, message="Item not found")
+@app.delete("/store/<string:store_id>")
+def delete_store(store_id):
+    try:
+        del stores[store_id]
+        return {"message": "Store deleted"}
+    except KeyError:
+        return abort(404, message="Store not found")
